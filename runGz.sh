@@ -1,14 +1,14 @@
 #!/bin/bash
 
+work_dir=$(pwd)
+
 export GZOLTAR_AGENT_JAR=$work_dir/gzoltaragent.jar
 export GZOLTAR_CLI_JAR=$work_dir/gzoltarcli.jar
-export D4J_HOME=/Users/yicheng/research/apr/repo/defects4j
+export D4J_HOME=/home/yicheng/research/apr/experiments/defects4j  # Change to your own defects4j home!
 export TZ='America/Los_Angeles' # some D4J's requires this specific TimeZone
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
-
-work_dir=$(pwd)
 
 localize(){  # 1st arg: PID, 2nd arg: BID
   PID=$1
@@ -109,20 +109,21 @@ collectResult(){  # 1st arg: PID, 2nd arg: BID
   fi
   cp -r "$work_dir/$PID-${BID}b/sfl/txt" "results/$PID/${BID}"
   rm -rf "$work_dir/$PID-${BID}b"
+  echo "Fault Localization for $PID-${BID} succeeds!"
 }
 
 PID_list=( Chart Closure Lang Math Mockito Time )
 for PID in "${PID_list[@]}"; do
   if [ $PID == "Chart" ]; then
-    BID_list=$(seq 1 26)
+    BID_list=( $(seq 1 26) )
   elif [ $PID == "Closure" ]; then
     BID_list=( $(seq 1 62) $(seq 64 92) $(seq 94 176) )
   elif [ $PID == "Lang" ]; then
     BID_list=( 1 $(seq 3 65) )
   elif [ $PID == "Math" ]; then
-    BID_list=$(seq 1 106)
+    BID_list=( $(seq 1 106) )
   elif [ $PID == "Mockito" ]; then
-    BID_list=$(seq 1 38)
+    BID_list=( $(seq 1 38) )
   elif [ $PID == "Time" ]; then
     BID_list=( $(seq 1 20) $(seq 22 27) )
   else
@@ -131,6 +132,14 @@ for PID in "${PID_list[@]}"; do
   fi
 
   for BID in "${BID_list[@]}"; do
+    cd "$work_dir"
+    if [ -d "results/$PID/${BID}" ]; then
+      echo "results/$PID/${BID} already exists, skip $PID-$BID"
+      continue
+    fi
+    echo ====================================================
+    echo "                     $PID $BID                      "
+    echo ====================================================
     localize $PID $BID
     collectResult $PID $BID
   done
