@@ -112,12 +112,12 @@ collectResult(){  # 1st arg: PID, 2nd arg: BID
   echo "Fault Localization for $PID-${BID} succeeds!"
 }
 
-PID_list=( Chart Closure Lang Math Mockito Time )
+PID_list=( Chart Lang Math Time Mockito Closure)
 for PID in "${PID_list[@]}"; do
   if [ $PID == "Chart" ]; then
     BID_list=( $(seq 1 26) )
   elif [ $PID == "Closure" ]; then
-    BID_list=( $(seq 1 62) $(seq 64 92) $(seq 94 176) )
+    BID_list=( $(seq 1 62) $(seq 64 92) $(seq 94 133) )
   elif [ $PID == "Lang" ]; then
     BID_list=( 1 $(seq 3 65) )
   elif [ $PID == "Math" ]; then
