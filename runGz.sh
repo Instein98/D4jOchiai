@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PID=$1
+BID=$2
 work_dir=$(pwd)
 
 export GZOLTAR_AGENT_JAR=$work_dir/gzoltaragent.jar
@@ -87,7 +89,7 @@ localize(){  # 1st arg: PID, 2nd arg: BID
         --dataFile "$ser_file" \
         --outputDirectory "$work_dir/$PID-${BID}b" \
         --family "sfl" \
-        --formula "ochiai" \
+        --formula "Tarantula:Ochiai:Jaccard:Ample:RUSSEL_RAO:Hamann:SORENSEN_DICE:Dice:Kulczynski1:Kulczynski2:SIMPLE_MATCHING:Sokal:M1:M2:ROGERS_TANIMOTO:Goodman:Hamming:Euclid:Overlap:Anderberg:Ochiai2:Zoltar:Wong1:Wong2:ER5c:GP02:GP03:GP13:GP19:SBI:DStar2:Wong3:ER1a:ER1b" \
         --metric "entropy" \
         --formatter "txt"
 }
@@ -108,39 +110,20 @@ collectResult(){  # 1st arg: PID, 2nd arg: BID
     return 
   fi
   cp -r "$work_dir/$PID-${BID}b/sfl/txt" "results/$PID/${BID}"
+  tar -zcvf "$work_dir/$PID-${BID}b".tar.gz "$work_dir/$PID-${BID}b"
   rm -rf "$work_dir/$PID-${BID}b"
+  [ ! -d projects ] && mkdir projects
+  mv "$work_dir/$PID-${BID}b".tar.gz projects/
   echo "Fault Localization for $PID-${BID} succeeds!"
 }
 
-PID_list=( Chart Lang Math Time Mockito Closure)
-for PID in "${PID_list[@]}"; do
-  if [ $PID == "Chart" ]; then
-    BID_list=( $(seq 1 26) )
-  elif [ $PID == "Closure" ]; then
-    BID_list=( $(seq 1 62) $(seq 64 92) $(seq 94 133) )
-  elif [ $PID == "Lang" ]; then
-    BID_list=( 1 $(seq 3 65) )
-  elif [ $PID == "Math" ]; then
-    BID_list=( $(seq 1 106) )
-  elif [ $PID == "Mockito" ]; then
-    BID_list=( $(seq 1 38) )
-  elif [ $PID == "Time" ]; then
-    BID_list=( $(seq 1 20) $(seq 22 27) )
-  else
-    echo "Unknown PID $PID in Defects4J 1.2.0, skipping..."
-    continue
-  fi
-
-  for BID in "${BID_list[@]}"; do
-    cd "$work_dir"
-    if [ -d "results/$PID/${BID}" ]; then
-      echo "results/$PID/${BID} already exists, skip $PID-$BID"
-      continue
-    fi
-    echo ====================================================
-    echo "                     $PID $BID                      "
-    echo ====================================================
-    localize $PID $BID
-    collectResult $PID $BID
-  done
-done
+cd "$work_dir"
+if [ -d "results/$PID/${BID}" ]; then
+  echo "results/$PID/${BID} already exists, skip $PID-$BID"
+  exit 0
+fi
+echo ====================================================
+echo "                     $PID $BID                      "
+echo ====================================================
+localize $PID $BID
+collectResult $PID $BID
