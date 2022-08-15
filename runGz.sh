@@ -118,10 +118,10 @@ collectResult(){  # 1st arg: PID, 2nd arg: BID
 }
 
 cd "$work_dir"
-if [ -d "results/$PID/${BID}" ]; then
-  echo "results/$PID/${BID} already exists, skip $PID-$BID"
-  exit 0
-fi
+# if [ -d "results/$PID/${BID}" ]; then
+#   echo "results/$PID/${BID} already exists, skip $PID-$BID"
+#   exit 0
+# fi
 echo ====================================================
 echo "                     $PID $BID                      "
 echo ====================================================

@@ -5,7 +5,7 @@ import subprocess as sp
 
 logDir = 'logs'
 
-maxProcessNum = 8
+maxProcessNum = 6
 processPool = []  # storing (process, "pid-bid")
 
 def waitPatchPoolFinish():
@@ -19,9 +19,6 @@ def waitPatchPoolFinish():
             else:
                 if exitCode != 0:
                     print('[ERROR] process {} finished with non-zero exit code!'.format(projId))
-                stdout, stderr = process.communicate()
-                print(stdout)
-                print(stderr)
                 valuesToRemove.append((process, projId))
                 print('===== Finished {} ====='.format(projId))
         for value in valuesToRemove:
@@ -38,15 +35,14 @@ def runGz(pid: str, bid: str):
             else:
                 if exitCode != 0:
                     print('[ERROR] process {} finished with non-zero exit code!'.format(projId))
-                stdout, stderr = process.communicate()
-                print(stdout)
-                print(stderr)
                 valuesToRemove.append((process, projId))
                 print('===== Finished {} ====='.format(projId))
         for value in valuesToRemove:
             processPool.remove(value)
-
-    process = sp.Popen("bash runGz.sh {} {} &> {}".format(pid, bid, os.path.join(logDir, pid+'-'+bid+'.log')), shell=True, stdout=sp.PIPE, stderr=sp.PIPE, universal_newlines=True)
+    logPath = os.path.join(logDir, pid+'-'+bid+'.log')
+    with open(logPath, 'w') as f:
+        process = sp.Popen("bash runGz.sh {} {}".format(pid, bid), stdout=f, stderr=f, shell=True, universal_newlines=True)
+        # process = sp.Popen("echo {}-{}".format(pid, bid), stdout=f, stderr=f, shell=True, universal_newlines=True)
     processPool.append((process, pid + '-' + bid))
     print('===== Start {}-{} ====='.format(pid, bid))
 
@@ -71,6 +67,18 @@ def main():
             bidList.remove(93)
 
         for bid in bidList:
+            bidResultDir = 'results/{}/{}'.format(pid, bid)
+            if os.path.isdir(bidResultDir):
+                ochiaiFile = 'results/{}/{}/ochiai.ranking.csv'.format(pid, bid)
+                linesNum = sp.check_output('cat results/{}/{}/ochiai.ranking.csv | wc -l '.format(pid, bid), shell=True, universal_newlines=True).strip()
+                if not os.path.isfile(ochiaiFile) or (os.path.isfile(ochiaiFile) and linesNum == '1'):
+                    print('Removing {} because the result is invalid'.format(bidResultDir))
+                    shutil.rmtree(bidResultDir)
+                else:
+                    print("results/{}/{} already exists, skipping".format(pid, bid))
+                    continue
+            if os.path.isfile(os.path.join(logDir, pid + '-' + str(bid)+'.log')):
+                os.remove(os.path.join(logDir, pid + '-' + str(bid)+'.log'))
             runGz(pid, str(bid))
 
     waitPatchPoolFinish()
