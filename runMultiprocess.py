@@ -46,25 +46,41 @@ def runGz(pid: str, bid: str):
     processPool.append((process, pid + '-' + bid))
     print('===== Start {}-{} ====='.format(pid, bid))
 
+d4j200ProjNames = ['Chart', 'Cli', 'Closure', 'Codec', 'Collections', 'Compress', 'Csv', 'Gson', 'JacksonCore', 'JacksonDatabind', 'JacksonXml', 'Jsoup', 'JxPath', 'Lang', 'Math', 'Mockito', 'Time']
+
+def getD4jProjNameFromSimpleName(simpleName):
+    for projName in d4j200ProjNames:
+        if simpleName == projName.lower():
+            return projName
+    print('Cannot find the project name for the simple name: {}'.format(simpleName))
+    exit -1
+
+projDict = {
+    'Chart': (list(range(1, 27)), []),
+    'Cli': (list(range(1, 41)), [6]),
+    'Closure': (list(range(1, 177)), [63, 93]),
+    'Codec': (list(range(1, 19)), []),
+    'Collections': (list(range(1, 29)), list(range(1, 25))),
+    'Compress': (list(range(1, 48)), []),
+    'Csv': (list(range(1, 17)), []),
+    'Gson': (list(range(1, 19)), []),
+    'JacksonCore': (list(range(1, 27)), []),
+    'JacksonDatabind': (list(range(1, 113)), []),
+    'JacksonXml': (list(range(1, 7)), []),
+    'Jsoup': (list(range(1, 94)), []),
+    'JxPath': (list(range(1, 23)), []),
+    'Lang': (list(range(1, 66)), [2]),
+    'Math': (list(range(1, 107)), []),
+    'Mockito': (list(range(1, 39)), []),
+    'Time': (list(range(1, 28)), [21])
+}
+
 def main():
     os.makedirs(logDir, exist_ok=True)
-    for pid in ['Chart', 'Lang', 'Math', 'Time', 'Mockito', 'Closure']:
-        if pid == 'Chart':
-            bidList = list(range(1, 27))
-        if pid == 'Lang':
-            bidList = list(range(1, 66))
-            bidList.remove(2)
-        if pid == 'Math':
-            bidList = list(range(1, 107))
-        if pid == 'Time':
-            bidList = list(range(1, 28))
-            bidList.remove(21)
-        if pid == 'Mockito':
-            bidList = list(range(1, 39))
-        if pid == 'Closure':
-            bidList = list(range(1, 134))
-            bidList.remove(63)
-            bidList.remove(93)
+    for pid in projDict:
+        bidList = projDict[pid][0]
+        deprecatedBidList = projDict[pid][1]
+        bidList = [bid for bid in bidList if bid not in deprecatedBidList]
 
         for bid in bidList:
             bidResultDir = 'results/{}/{}'.format(pid, bid)
