@@ -1,0 +1,15 @@
+name;suspiciousness_value
+org.apache.commons.cli$Util#stripLeadingAndTrailingQuotes(java.lang.String):67;0.5773502691896258
+org.apache.commons.cli$Util#stripLeadingAndTrailingQuotes(java.lang.String):72;0.5773502691896258
+org.apache.commons.cli$Util#stripLeadingAndTrailingQuotes(java.lang.String):65;0.09667364890456635
+org.apache.commons.cli$Util#stripLeadingAndTrailingQuotes(java.lang.String):69;0.09667364890456635
+org.apache.commons.cli$Util#stripLeadingAndTrailingQuotes(java.lang.String):70;0.09667364890456635
+org.apache.commons.cli$Util#stripLeadingAndTrailingQuotes(java.lang.String):75;0.09667364890456635
+org.apache.commons.cli$Util#Util():26;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):38;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):40;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):42;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):44;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):46;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):48;0.0
+org.apache.commons.cli$Util#stripLeadingHyphens(java.lang.String):51;0.0
