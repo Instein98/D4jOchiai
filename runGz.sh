@@ -41,7 +41,7 @@ localize(){  # 1st arg: PID, 2nd arg: BID
   unit_tests_file="$work_dir/$PID-${BID}b/unit_tests.txt"
   relevant_tests="*"  # Note, you might want to consider the set of relevant tests provided by D4J, i.e., $D4J_HOME/framework/projects/$PID/relevant_tests/$BID
 
-  java -cp "$test_classpath:$test_classes_dir:$D4J_HOME/framework/projects/lib/junit-4.11.jar:$GZOLTAR_CLI_JAR" \
+  java -cp "$D4J_HOME/framework/projects/lib/junit-4.11.jar:$test_classpath:$test_classes_dir:$GZOLTAR_CLI_JAR" \
     com.gzoltar.cli.Main listTestMethods \
       "$test_classes_dir" \
       --outputFile "$unit_tests_file" \
